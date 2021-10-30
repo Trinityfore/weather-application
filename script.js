@@ -1,36 +1,51 @@
 // constants
+const BASE_URL='https://api.openweathermap.org/data/2.5/weather'
+const API_KEY= 'd7411c8633100dc00e9b3cfcadc2cb20'
 
+
+//variables
+let weatherData; 
+
+//cached element refrences
 const $name = $('#name');
 const $temp = $('#temp')
 const $feels_like = $('#feels_like')
 const $weather = $('#weather')
-
-//variables
-
-
-//cached element refrences
-function handleSubmit(evt){
-    evt.preventDefault();
-
-    const currentLocation = $input.val();
-}
-
+const $input = $('input')
+const $form = $('form')
 
 //event listners 
 
-$.ajax({
-    url:"https://api.openweathermap.org/data/2.5/weather?q=orlando&appid=d7411c8633100dc00e9b3cfcadc2cb20&units=imperial"
-}).then(
-    (data) => {
-        $name.text(data.name);
-        $temp.text(data.main.temp);
-        $feels_like.text(data.main.feels_like);
-        $weather.text(data.weather[0].description);
+$form.on('submit', handleSubmit)
 
-      console.log(data)
+//functions
+
+function handleSubmit(evt){
+    evt.preventDefault();
+    const currentLocation = $input.val();
+  $.ajax
+   (`${BASE_URL}?q=${currentLocation}&appid=${API_KEY}&units=imperial`)
+.then(
+    (data) => {
+      weatherData = data;
+      render();
+
+      console.log(weatherData)
     },
     (error) => {
       console.log("bad request: ", error)
     }
-  )
+  )  
+}
+
+function render(){
+  $name.text(weatherData.name);
+  $temp.text(weatherData.main.temp);
+  $feels_like.text(weatherData.main.feels_like);
+  $weather.text(weatherData.weather[0].description);
+};
+
+
+
+
  
